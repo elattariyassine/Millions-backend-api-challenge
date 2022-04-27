@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->string('uuid')->primary();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+        Schema::create('post_likes', function (Blueprint $table) {
+            $table->string("uuid")->primary();
+            $table->string('user_id');
+            $table->string('post_id');
+            $table->foreign('user_id')->references('uuid')->on('users');
+            $table->foreign('post_id')->references('uuid')->on('posts')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('post_likes');
     }
 };
