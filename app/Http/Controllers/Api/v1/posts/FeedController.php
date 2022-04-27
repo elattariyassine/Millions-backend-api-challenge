@@ -17,7 +17,7 @@ class FeedController extends Controller
             ->withCount('likes')
             ->with('user')
             ->withLastReacters(5)
-            ->get();
+            ->paginate(10);
 
         return PostFeedResource::collection($posts);
     }
