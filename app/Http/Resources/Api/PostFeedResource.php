@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\v1;
+namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,7 +15,7 @@ class PostFeedResource extends JsonResource
             'date' => $this->created_at,
             'author' => $this->user->name,
             'total_likes' => $this->likes_count,
-            'reacters' => $this->whenLoaded('likes', fn() => $this->likes->pluck('user.name'))
+            'reacters' => $this->whenLoaded('likes', fn() => $this->likes->pluck('user.name')),
         ];
     }
 }

@@ -3,20 +3,17 @@
 namespace App\Notifications;
 
 use App\Models\Post;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-class NewPostNotification extends Notification implements ShouldQueue
+class PostCreatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(private Post $post, private User $user)
-    {
-    }
+    public function __construct(private Post $post) { }
 
-    public function via($notifiable): array
+    public function via($notifiable)
     {
         return ['database'];
     }
@@ -24,7 +21,7 @@ class NewPostNotification extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'user' => $this->user->name,
+            'user' => $this->post->user->name,
             'post' => $this->post->description
         ];
     }

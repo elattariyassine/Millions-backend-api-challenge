@@ -11,13 +11,12 @@ class DeleteOldPostsCommand extends Command
 
     protected $description = 'Delete {15} days old posts.';
 
-
     public function __construct()
     {
         parent::__construct();
     }
 
-    public function handle(): int
+    public function handle()
     {
         Post::query()
             ->whereDate('created_at', now()->subDays($this->argument('days')))

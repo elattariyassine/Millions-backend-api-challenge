@@ -1,35 +1,31 @@
 <?php
 
-use App\Http\Controllers\Api\v1\auth\LoginController;
-use App\Http\Controllers\Api\v1\auth\LogoutController;
-use App\Http\Controllers\Api\v1\auth\RegisterController;
-use App\Http\Controllers\Api\v1\posts\DestroyController;
-use App\Http\Controllers\Api\v1\posts\FeedController;
-use App\Http\Controllers\Api\v1\posts\LikesController;
-use App\Http\Controllers\Api\v1\posts\ReactController;
-use App\Http\Controllers\Api\v1\posts\StoreController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PostsController;
 use Illuminate\Support\Facades\Route;
 
-
-Route::prefix('v1')->group(function (){
-    /* Auth */
-    Route::prefix('auth')->group(function () {
-        Route::post('register', RegisterController::class);
-        Route::post('login', LoginController::class);
-        Route::post('logout', LogoutController::class);
+/* Auth */
+Route::controller(AuthController::class)
+    ->prefix('auth')
+    ->group(function () {
+        Route::post('/login', 'login');
+        Route::post('/logout', 'logout')->middleware('auth:api');
+        Route::post('/register', 'register');
     });
 
-    /* network feed */
-    Route::get('posts/feed', FeedController::class)->name('feed');
+/* network feed */
+Route::get('posts/feed', [PostsController::class, 'index'])->name('feed');
 
-    Route::group(['prefix' => 'posts', 'middleware' => ['auth:api']], function () {
+Route::controller(PostsController::class)
+    ->prefix('posts')
+    ->middleware('auth:api')
+    ->group(function () {
         /* create post */
-        Route::post('', StoreController::class)->name('posts.store');
+        Route::post('', 'store')->name('posts.store');
         /* delete post */
-        Route::delete('{post}', DestroyController::class)->name('posts.delete');
+        Route::delete('{post}', 'destroy')->name('posts.delete')->middleware('can:delete,post');
         /* react to post */
-        Route::get('{postUUID}/react', ReactController::class)->name('posts.react');
+        Route::get('{post}/react', 'react')->name('posts.react');
         /* get post's reacters */
-        Route::get('{post}/likes', LikesController::class)->name('posts.likes');
+        Route::get('{post}/likes', 'likes')->name('posts.likes');
     });
-});

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -13,7 +12,10 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, HasUuid;
+    use HasApiTokens,
+        HasFactory,
+        Notifiable,
+        HasUuid;
 
     protected $fillable = [
         'uuid',
@@ -36,7 +38,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
-    public function getJWTCustomClaims(): array
+    public function getJWTCustomClaims()
     {
         return [];
     }
@@ -46,13 +48,22 @@ class User extends Authenticatable implements JWTSubject
         $this->attributes['password'] = Hash::make($password);
     }
 
-    public function posts(): HasMany
+    public function posts()
     {
         return $this->hasMany(Post::class, 'user_id', 'uuid');
     }
 
-    public function postLikes(): HasMany
+    public function postLikes()
     {
         return $this->hasMany(PostLike::class, 'user_id', 'uuid');
+    }
+
+    public function react(Post $post)
+    {
+        if ($reaction = $this->postLikes()->firstWhere('post_id', $post->uuid)) {
+            return $reaction->delete();
+        }
+
+        $this->postLikes()->create(['post_id' => $post->uuid]);
     }
 }
