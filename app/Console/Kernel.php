@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\DeleteOldPostsCommand;
+use App\Models\Post;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -10,7 +10,9 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(DeleteOldPostsCommand::class, [15])->daily();
+        $schedule->command('model:prune', [
+            '--model' => [Post::class]
+        ])->daily();
     }
 
     protected function commands()

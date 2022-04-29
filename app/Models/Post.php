@@ -6,6 +6,7 @@ use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Staudenmeir\EloquentEagerLimit\HasEagerLimit;
 
@@ -13,7 +14,8 @@ class Post extends Model
 {
     use HasFactory,
         HasUuid,
-        HasEagerLimit;
+        HasEagerLimit,
+        Prunable;
 
     protected $fillable = [
         'description',
@@ -34,5 +36,10 @@ class Post extends Model
     public function scopeWithLastReacters(Builder $query,int $count = 5)
     {
         return $query->with('likes', fn (HasMany $query) => $query->latest()->with('user')->limit($count));
+    }
+
+    public function prunable()
+    {
+        return static::whereDate('created_at', '<=',now()->subDays(15));
     }
 }

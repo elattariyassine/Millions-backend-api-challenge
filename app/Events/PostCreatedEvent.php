@@ -9,7 +9,9 @@ use Illuminate\Queue\SerializesModels;
 
 class PostCreatedEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable,
+        InteractsWithSockets,
+        SerializesModels;
 
     public function __construct(public Post $post) { }
 }

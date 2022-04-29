@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\StorePostRequest;
+use App\Http\Requests\Posts\StorePostRequest;
 use App\Http\Resources\Api\PostFeedResource;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +20,7 @@ class PostsController extends Controller
             ->withLastReacters(5)
             ->paginate(10);
 
-        return response()->json(PostFeedResource::collection($posts)->response()->getData(true), Response::HTTP_OK);
+        return response()->json(PostFeedResource::collection($posts)->response()->getData(true));
     }
 
     public function store(StorePostRequest $request)
@@ -42,8 +42,7 @@ class PostsController extends Controller
 
     public function likes(Post $post)
     {
-        $likes = $post
-            ->likes()
+        $likes = $post->likes()
             ->with('user')
             ->get()
             ->pluck('user.name');
@@ -53,7 +52,7 @@ class PostsController extends Controller
 
     public function react(Post $post)
     {
-        Auth::user()->react($post);
+        Auth::user()->toggleLike($post);
 
         return response()->noContent();
     }

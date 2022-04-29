@@ -58,7 +58,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(PostLike::class, 'user_id', 'uuid');
     }
 
-    public function react(Post $post)
+    public function toggleLike(Post $post)
     {
         if ($reaction = $this->postLikes()->firstWhere('post_id', $post->uuid)) {
             return $reaction->delete();

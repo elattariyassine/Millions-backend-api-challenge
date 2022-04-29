@@ -22,7 +22,7 @@ class PostCreatedNotification extends Notification implements ShouldQueue
     {
         return [
             'user' => $this->post->user->name,
-            'post' => $this->post->description
+            'post' => $this->post->description,
         ];
     }
 }
