@@ -27,15 +27,6 @@ My implementation of Millions backend challenge.
 - Mysql
 - Docker
 
-## Installation steps
-
-* Clone repository
-* `composer install`
-* Create DB eg: `db_millions`
-* `composer setup` (copies `env` file, generates key, and migrates DB)
-* Then run ``` php artisan serve ```
-* In order to test notifications, you need to setup redis locally then run ``` php artisan queue:work ```
-
 ## Postman collection
 
 You can download this [postman collection](docs/postman_collection.json) to test the Api, modify these variables to simplify your testing journey.
